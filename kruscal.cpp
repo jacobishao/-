@@ -11,11 +11,13 @@ struct Edge{
 		            return e1.weight<e2.weight;  
 	}
 };
-int f[10001];
+int f[11001];
+int cost[11000];
+vector<Edge> E;
 
 int find(int x)
 {
-	return f[x]>0?find(f[x]):x;
+	return f[x]<0?x:f[x]=find(f[x]);
 }
 bool merge(int x,int y)
 {
@@ -33,7 +35,7 @@ bool merge(int x,int y)
 
 
 }
-int kruscal(int n,int m, vector<Edge> &E)
+int kruscal(int n,int m)
 {
 	sort(E.begin(),E.begin()+m);
 	memset(f,-1,sizeof(f));
@@ -48,9 +50,10 @@ int kruscal(int n,int m, vector<Edge> &E)
 			sum+=E[i].weight;
 		}
 		else
+		{
 			if( E[i].weight<0)
 				sum+=E[i].weight;
-
+		}
 	}
 
 	if(count<n-1) return 0;
@@ -63,7 +66,6 @@ int main()
 {
 	int m,n;
 	cin>>n>>m;
-	vector<Edge> E;
 	for(int i=0;i<m;i++)
 	{
 		int u,v,w;
@@ -73,19 +75,23 @@ int main()
 	}
 	int w;
 	int c=0;
-	for(int i=0;i<n;i++)
-		if(cin >>w&&w!=-1)
+	for(int i=1;i<=n;i++)
+	{
+		cin>>cost[i];
+		if(cost[i]!=-1)
 		{	
 			c++;
-			E.push_back(Edge{0,i+1,w});
+			E.push_back(Edge{0,i,cost[i]});
 		}
-	
+	}	
 	int t;
-	if(t =kruscal(n,m,E))
+	if(t =kruscal(n,m))
 	{
-		cout<<min(kruscal(n+1,m+c,E),t)<<endl;
+
+		cout<<min(kruscal(n+1,m+c),t)<<endl;
 	}
-	cout<<kruscal(n+1,m+c,E)<<endl;
+	else
+		cout<<kruscal(n+1,m+c)<<endl;
 		
 	return 0;
 }
